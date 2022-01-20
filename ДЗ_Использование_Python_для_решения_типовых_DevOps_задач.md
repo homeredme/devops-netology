@@ -50,18 +50,16 @@ import os
 
 bash_command = ["cd ~/devops-netology", "git status"]
 fullpath = os.path.abspath("~/devops-netology")
-print(fullpath)
 result_os = os.popen(' && '.join(bash_command)).read()
 for result in result_os.split('\n'):
     if result.find('изменено') != -1:
         prepare_result = result.replace('\tизменено:   ', '').replace(' ', '')
-        print(prepare_result)
+        print(fullpath+"/"+prepare_result)
 ```
 
 ### Вывод скрипта при запуске при тестировании:
 ```
-/Users/salekseev/~/devops-netology
-branching/merge.sh
+/Users/salekseev/devops-netology/branching/merge.sh
 ```
 
 ## Обязательная задача 3
@@ -79,21 +77,19 @@ if len(sys.argv)>1:
     path = sys.argv[1]
 bash_command = ["cd "+path, "git status 2>&1"]
 fullpath = os.path.abspath(path)
-print(fullpath)
 result_os = os.popen(' && '.join(bash_command)).read()
 for result in result_os.split('\n'):
     if result.find('fatal') != -1:
-        print('Не является GIT репозиторием')
+        print(fullpath+' не является GIT репозиторием')
         break
     if result.find('изменено') != -1:
         prepare_result = result.replace('\tизменено:   ', '').replace(' ', '')
-        print(prepare_result)
+        print(fullpath+"/"+prepare_result)
 ```
 
 ### Вывод скрипта при запуске при тестировании:
 ```
-/Users/salekseev
-Не является GIT репозиторием
+/Users/salekseev не является GIT репозиторием
 ```
 
 ## Обязательная задача 4
@@ -107,35 +103,28 @@ import socket
 import sys
 import time
 
-list = ["drive.google.com", "mail.google.com", "google.com"]
-oip = []
+list = {'drive.google.com':'0.0.0.0', 'mail.google.com':'0.0.0.0', 'google.com':'0.0.0.0'}
 
-while 1 == 1:
- i = 0
- while i < len(list):
-  host = list[i]
+while True:
+ for host in list:
   ip = socket.gethostbyname(host)
-  if len(oip) > i:
-   oip[i] = 0.0.0.0 # for test
-   if ip != oip[i]:
-    print('[ERROR] ' + host +' IP mistmatch: '+oip[i]+' '+ip)
-   else:
-    print(host+' - '+ip)
+  if ip != list[host]:
+   print('[ERROR] ' + host +' IP mistmatch: '+list[host]+' '+ip)
+   list[host] = ip
   else:
    print(host+' - '+ip)
-  oip.append(ip)
-  i+=1
+
  time.sleep(1)
 ```
 
 ### Вывод скрипта при запуске при тестировании:
 ```
-drive.google.com - 142.251.1.194
-mail.google.com - 173.194.222.83
-google.com - 74.125.131.139
 [ERROR] drive.google.com IP mistmatch: 0.0.0.0 142.251.1.194
-[ERROR] mail.google.com IP mistmatch: 0.0.0.0 173.194.222.83
-[ERROR] google.com IP mistmatch: 0.0.0.0 74.125.131.139
+[ERROR] mail.google.com IP mistmatch: 0.0.0.0 142.250.150.19
+[ERROR] google.com IP mistmatch: 0.0.0.0 64.233.162.102
+drive.google.com - 142.251.1.194
+mail.google.com - 142.250.150.19
+google.com - 64.233.162.102
 ```
 
 ## Дополнительное задание (со звездочкой*) - необязательно к выполнению
